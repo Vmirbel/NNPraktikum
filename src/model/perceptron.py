@@ -8,6 +8,9 @@ import numpy as np
 from util.activation_functions import Activation
 from model.classifier import Classifier
 
+__author__ = "Vladimir Belyaev"  # Adjust this when you copy the file
+__email__ = "vladimir.belyaev@student.kit.edu"  # Adjust this when you copy the file
+
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
                     stream=sys.stdout)
@@ -47,6 +50,10 @@ class Perceptron(Classifier):
         # around 0 and 0.1
         self.weight = np.random.rand(self.trainingSet.input.shape[1])/10
 
+        # we need a w0 weight (bias)
+        self.w0 = 0
+        self.errors_ = []
+
     def train(self, verbose=True):
         """Train the perceptron with the perceptron learning algorithm.
 
@@ -58,7 +65,19 @@ class Perceptron(Classifier):
 
         # Here you have to implement the Perceptron Learning Algorithm
         # to change the weights of the Perceptron
-        pass
+
+        for epochIdx in range(self.epochs):
+            errors = 0
+            for xi, target in zip(self.trainingSet.input, self.trainingSet.label):
+                error = self.learningRate * (target - self.fire(xi))
+                self.weight += error*xi
+                self.w0 += error
+                errors += int(error != 0.0)
+            self.errors_.append(errors)
+            if verbose:
+                print("Epoch: %d --> Errors: %d" % (epochIdx, errors))
+        return self
+
 
     def classify(self, testInstance):
         """Classify a single instance.
@@ -75,7 +94,9 @@ class Perceptron(Classifier):
         # Here you have to implement the classification for one instance,
         # i.e., return True if the testInstance is recognized as a 7,
         # False otherwise
-        pass
+
+        return self.fire(testInstance)
+
 
     def evaluate(self, test=None):
         """Evaluate a whole dataset.
@@ -102,4 +123,4 @@ class Perceptron(Classifier):
     def fire(self, input):
         """Fire the output of the perceptron corresponding to the input """
         # I already implemented it for you to see how you can work with numpy
-        return Activation.sign(np.dot(np.array(input), self.weight))
+        return Activation.sign(np.dot(np.array(input), self.weight) + self.w0)
