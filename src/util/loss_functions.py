@@ -85,6 +85,7 @@ class BinaryCrossEntropyError(Error):
         self.errorString = 'bce'
 
     def calculateError(self, target, output):
+        # Here you have to implement the Binary Cross Entropy
         pass
 
 
@@ -97,4 +98,5 @@ class CrossEntropyError(Error):
         self.errorString = 'crossentropy'
 
     def calculateError(self, target, output):
+        # Here you have to implement the Cross Entropy Error
         pass

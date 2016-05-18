@@ -14,76 +14,76 @@ class Activation:
     """
 
     @staticmethod
-    def sign(netOutput, threshold=0):
-        return netOutput >= threshold
+    def sign(outp, threshold=0):
+        return outp >= threshold
 
     @staticmethod
-    def sigmoid(netOutput):
+    def sigmoid(outp):
         # use e^x from numpy to avoid overflow
-        return 1/(1+exp(-1.0*netOutput))
+        return 1/(1+exp(-1.0*outp))
 
     @staticmethod
-    def sigmoidPrime(netOutput):
+    def sigmoid_prime(outp):
         # Here you have to code the derivative of sigmoid function
         # netOutput.*(1-netOutput)
         pass
 
     @staticmethod
-    def tanh(netOutput):
+    def tanh(outp):
         # return 2*Activation.sigmoid(2*netOutput)-1
-        ex = exp(1.0*netOutput)
-        exn = exp(-1.0*netOutput)
+        ex = exp(1.0*outp)
+        exn = exp(-1.0*outp)
         return divide(ex-exn, ex+exn)  # element-wise division
 
     @staticmethod
-    def tanhPrime(netOutput):
+    def tanh_prime(outp):
         # Here you have to code the derivative of tanh function
         pass
 
     @staticmethod
-    def identity(netOutput):
+    def identity(outp):
         return lambda x: x
 
     @staticmethod
-    def identityPrime(netOutput):
+    def identity_prime(outp):
         # Here you have to code the derivative of identity function
         pass
 
     @staticmethod
-    def softmax(netOutput):
+    def softmax(outp):
         # Here you have to code the softmax function
         pass
 
     @staticmethod
-    def getActivation(str):
+    def get_activation(function_name):
         """
         Returns the activation function corresponding to the given string
         """
 
-        if str == 'sigmoid':
+        if function_name == 'sigmoid':
             return Activation.sigmoid
-        elif str == 'softmax':
+        elif function_name == 'softmax':
             return Activation.softmax
-        elif str == 'tanh':
+        elif function_name == 'tanh':
             return Activation.tanh
-        elif str == 'linear':
+        elif function_name == 'linear':
             return Activation.identity
         else:
-            raise ValueError('Unknown activation function: ' + str)
+            raise ValueError('Unknown activation function: ' + function_name)
 
     @staticmethod
-    def getDerivative(str):
+    def get_derivative(function_name):
         """
         Returns the derivative function corresponding to a given string which
         specify the activation function
         """
 
-        if str == 'sigmoid':
-            return Activation.sigmoidPrime
-        elif str == 'tanh':
-            return Activation.tanhPrime
-        elif str == 'linear':
-            return Activation.identityPrime
+        if function_name == 'sigmoid':
+            return Activation.sigmoid_prime
+        elif function_name == 'tanh':
+            return Activation.tanh_prime
+        elif function_name == 'linear':
+            return Activation.identity_prime
         else:
             raise ValueError('Cannot get the derivative of'
-                             ' the activation function: ' + str)
+                             ' the activation function: ' + function_name)

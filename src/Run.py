@@ -12,15 +12,20 @@ from report.evaluator import Evaluator
 
 def main():
     data = MNISTSeven("../data/mnist_seven.csv", 3000, 1000, 1000)
-    # myStupidClassifier = StupidRecognizer(data.trainingSet,
-    #                                       data.validationSet,
-    #                                       data.testSet)
-    # Uncomment this to make your Perceptron evaluated
+    myStupidClassifier = StupidRecognizer(data.trainingSet,
+                                          data.validationSet,
+                                          data.testSet)
     myPerceptronClassifier = Perceptron(data.trainingSet,
-                                         data.validationSet,
-                                         data.testSet,
-                                         learningRate=0.005, # default learningRate: 0.005
-                                         epochs=100)         # default epochs: 30
+                                        data.validationSet,
+                                        data.testSet,
+                                        learningRate=0.005,
+                                        epochs=10)
+    # Uncomment this to run Logistic Neuron Layer
+#     myLRClassifier = LogisticRegression(data.trainingSet,
+#                                         data.validationSet,
+#                                         data.testSet,
+#                                         learningRate=0.005,
+#                                         epochs=30)
 
     # Train the classifiers
     print("=========================")
@@ -34,33 +39,36 @@ def main():
     myPerceptronClassifier.train()
     print("Done..")
 
-    # plot a graph with a number of errors after each epoch
-    plt.plot(range(1, len(myPerceptronClassifier.errors_)+1), myPerceptronClassifier.errors_, marker='o')
-    plt.xlabel('Epoch')
-    plt.ylabel('Errors')
+    print("\nPerceptron has been training..")
+    myPerceptronClassifier.train()
+    print("Done..")
+
+#     print("\nLogistic Regression has been training..")
+#     myLRClassifier.train()
     plt.draw()
 
     # Do the recognizer
     # Explicitly specify the test set to be evaluated
-    #stupidPred = myStupidClassifier.evaluate()
-    # Uncomment this to make your Perceptron evaluated
+    stupidPred = myStupidClassifier.evaluate()
     perceptronPred = myPerceptronClassifier.evaluate()
+#     lrPred = myLRClassifier.evaluate()
 
     # Report the result
     print("=========================")
     evaluator = Evaluator()
 
-    #print("Result of the stupid recognizer:")
+    print("Result of the stupid recognizer:")
     # evaluator.printComparison(data.testSet, stupidPred)
-    #evaluator.printAccuracy(data.testSet, stupidPred)
+    evaluator.printAccuracy(data.testSet, stupidPred)
 
     print("\nResult of the Perceptron recognizer:")
-    evaluator.printComparison(data.testSet, perceptronPred)
-    # Uncomment this to make your Perceptron evaluated
+    # evaluator.printComparison(data.testSet, perceptronPred)
     evaluator.printAccuracy(data.testSet, perceptronPred)
 
-    # eval.printConfusionMatrix(data.testSet, pred)
-    # eval.printClassificationResult(data.testSet, pred, target_names)
-    plt.show()
+#     print("\nResult of the Logistic Regression recognizer:")
+#     # evaluator.printComparison(data.testSet, perceptronPred)
+#     evaluator.printAccuracy(data.testSet, lrPred)
+
+
 if __name__ == '__main__':
     main()

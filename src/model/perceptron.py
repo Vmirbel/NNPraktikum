@@ -4,6 +4,7 @@ import sys
 import logging
 
 import numpy as np
+from sklearn.metrics import accuracy_score
 
 from util.activation_functions import Activation
 from model.classifier import Classifier
@@ -35,7 +36,7 @@ class Perceptron(Classifier):
     trainingSet : list
     validationSet : list
     testSet : list
-    weight : list
+    weight : ndarray
     """
     def __init__(self, train, valid, test, learningRate=0.01, epochs=50):
 
@@ -50,12 +51,15 @@ class Perceptron(Classifier):
         # around 0 and 0.1
         self.weight = np.random.rand(self.trainingSet.input.shape[1])/10
 
-        # we need a w0 weight (bias)
-        self.w0 = 0
         self.errors_ = []
+        # add bias values ("1"s) at the beginning of all data sets
+        np.insert(self.trainingSet.input, 0, 1, axis=1)
+        np.insert(self.validationSet.input, 0, 1, axis=1)
+        np.insert(self.testSet.input, 0, 1, axis=1)
 
     def train(self, verbose=True):
-        """Train the perceptron with the perceptron learning algorithm.
+        """
+        Train the perceptron with the perceptron learning algorithm.
 
         Parameters
         ----------
@@ -63,21 +67,32 @@ class Perceptron(Classifier):
             Print logging messages with validation accuracy if verbose is True.
         """
 
-        # Here you have to implement the Perceptron Learning Algorithm
-        # to change the weights of the Perceptron
+        for epoch in range(self.epochs):
+            if verbose:
+                print("Training epoch {0}/{1}.."
+                      .format(epoch + 1, self.epochs))
 
+            self._train_one_epoch()
+
+            if verbose:
+                accuracy = accuracy_score(self.validationSet.label,
+                                          self.evaluate(self.validationSet))
+                print("Accuracy on validation: {0:.2f}%"
+                      .format(accuracy*100))
+                print("-----------------------------")
+
+    def _train_one_epoch(self):
+        """
+        Train one epoch, seeing all input instances
+        pass
         for epochIdx in range(self.epochs):
             errors = 0
-            for xi, target in zip(self.trainingSet.input, self.trainingSet.label):
                 error = self.learningRate * (target - self.fire(xi))
-                self.weight += error*xi
-                self.w0 += error
                 errors += int(error != 0.0)
-            self.errors_.append(errors)
+            # online learning: updating weights after seeing 1 instance
             if verbose:
                 print("Epoch: %d --> Errors: %d" % (epochIdx, errors))
         return self
-
 
     def classify(self, testInstance):
         """Classify a single instance.
@@ -94,7 +109,7 @@ class Perceptron(Classifier):
         # Here you have to implement the classification for one instance,
         # i.e., return True if the testInstance is recognized as a 7,
         # False otherwise
-
+        pass
         return self.fire(testInstance)
 
 
@@ -120,7 +135,7 @@ class Perceptron(Classifier):
         # set.
         return list(map(self.classify, test))
 
-    def fire(self, input):
+    def _fire(self, input):
         """Fire the output of the perceptron corresponding to the input """
         # I already implemented it for you to see how you can work with numpy
         return Activation.sign(np.dot(np.array(input), self.weight) + self.w0)
