@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+__author__ = "Vladimir Belyaev"  # Adjust this when you copy the file
+__email__ = "vladimir.belyaev@student.kit.edu"  # Adjust this when you copy the file
+
 import sys
 import logging
 
@@ -64,8 +67,6 @@ class LogisticRegression(Classifier):
         # Please using LogisticLayer class
 
         for epochIdx in range(self.epochs):
-
-            # np.random.shuffle(self.trainingSet)
             for xi, target in zip(self.trainingSet.input, self.trainingSet.label):
                 self.classify(xi)
                 self.layer.computeDerivative(target, self.layer.weights)

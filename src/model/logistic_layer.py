@@ -1,3 +1,6 @@
+__author__ = "Vladimir Belyaev"  # Adjust this when you copy the file
+__email__ = "vladimir.belyaev@student.kit.edu"  # Adjust this when you copy the file
+
 import numpy as np
 
 from util.activation_functions import Activation
