@@ -23,3 +23,10 @@ src/model/*.pyc
 src/processing/*.pyc
 src/report/*.pyc
 src/util/*.pyc
+.idea/.name
+.idea/encodings.xml
+.idea/misc.xml
+.idea/NNPraktikum.iml
+.idea/modules.xml
+.idea/workspace.xml
+*.pyc

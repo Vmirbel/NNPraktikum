@@ -13,7 +13,7 @@ class LogisticLayer():
     n_out: int: number of units of the current layer (or output)
     activation: string: activation function of every units in the layer
     is_classifier_layer: bool:  to do classification or regression
-
+    learningRate: double
     Attributes
     ----------
     n_in : positive int:
@@ -28,6 +28,7 @@ class LogisticLayer():
         the name of the activation function
     is_classifier_layer: bool
         to do classification or regression
+    learningRate: double
     deltas : ndarray
         partial derivatives
     size : positive int
@@ -37,7 +38,7 @@ class LogisticLayer():
     """
 
     def __init__(self, n_in, n_out, weights=None,
-                 activation='sigmoid', is_classifier_layer=False):
+                 activation='sigmoid', is_classifier_layer=False, learningRate=0.5):
 
         # Get activation function from string
         self.activation_string = activation
@@ -53,11 +54,13 @@ class LogisticLayer():
 
         # You can have better initialization here
         if weights is None:
-            self.weight = np.random.rand(n_in, n_out)/10
+            self.weights = np.random.rand(n_in+1, n_out)/10
         else:
             self.weights = weights
 
         self.is_classifier_layer = is_classifier_layer
+
+        self.learningRate = learningRate
 
         # Some handy properties of the layers
         self.size = self.n_out
@@ -77,8 +80,10 @@ class LogisticLayer():
         outp: ndarray
             a numpy array (1,n_out) containing the output of the layer
         """
-
         # Here you have to implement the forward pass
+        self.inp[0] = 1
+        self.inp[1:, 0] = inp
+        self.outp = self._fire(self.inp)
         pass
 
     def computeDerivative(self, nextDerivatives, nextWeights):
@@ -99,15 +104,20 @@ class LogisticLayer():
         """
 
         # Here the implementation of partial derivative calculation
-        pass
+        if self.is_classifier_layer:
+            # output layer: nextDerivative --> target
+            self.deltas = (nextDerivatives-self.outp)*self.outp*(1-self.outp)
+        else:
+            # hidden layer
+            self.deltas = self.outp*(1-self.outp)*np.sum(self.deltas * nextWeights)
+
 
     def updateWeights(self):
         """
         Update the weights of the layer
         """
+        self.weights = self.weights + self.learningRate * self.deltas * self.inp
 
-        # Here the implementation of weight updating mechanism
-        pass
 
     def _fire(self, inp):
-        return Activation.sigmoid(np.dot(np.array(inp), self.weight))
+        return Activation.sigmoid(np.dot(np.array(inp).T, self.weights))

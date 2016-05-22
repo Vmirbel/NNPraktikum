@@ -7,6 +7,9 @@ import numpy as np
 
 from util.activation_functions import Activation
 from model.classifier import Classifier
+from model.logistic_layer import LogisticLayer
+from report.evaluator import Evaluator
+from sklearn.metrics import accuracy_score
 
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
@@ -44,6 +47,10 @@ class LogisticRegression(Classifier):
         self.validationSet = valid
         self.testSet = test
 
+        self.layer = LogisticLayer(len(self.trainingSet.input[1]), 1,  is_classifier_layer=True, learningRate=learningRate)
+        # create an array to save performance after each epoch
+        self.perf = []
+
     def train(self, verbose=True):
         """Train the Logistic Regression.
 
@@ -55,7 +62,20 @@ class LogisticRegression(Classifier):
 
         # Here you have to implement training method "epochs" times
         # Please using LogisticLayer class
-        pass
+
+        for epochIdx in range(self.epochs):
+
+            # np.random.shuffle(self.trainingSet)
+            for xi, target in zip(self.trainingSet.input, self.trainingSet.label):
+                self.classify(xi)
+                self.layer.computeDerivative(target, self.layer.weights)
+                self.layer.updateWeights()
+
+            lrPred = self.evaluate()
+            self.perf.append(accuracy_score(self.testSet.label, lrPred)*100)
+
+            if verbose:
+                print("Epoch: %d" % epochIdx)
 
     def classify(self, testInstance):
         """Classify a single instance.
@@ -71,7 +91,11 @@ class LogisticRegression(Classifier):
         """
 
         # Here you have to implement classification method given an instance
-        pass
+        self.layer.forward(testInstance)
+        if self.layer.outp > 0.5:
+            return 1
+        else:
+            return 0
 
     def evaluate(self, test=None):
         """Evaluate a whole dataset.
