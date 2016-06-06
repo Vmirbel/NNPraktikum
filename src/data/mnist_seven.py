@@ -11,46 +11,62 @@ class MNISTSeven(object):
 
     Parameters
     ----------
-    dataPath : string
+    data_path : string
         Path to a CSV file with delimiter ',' and unint8 values.
-    numTrain : int
+    num_train : int
         Number of training examples.
-    numValid : int
+    num_valid : int
         Number of validation examples.
-    numTest : int
+    num_test : int
         Number of test examples.
+    one_hot: bool
+        If this flag is set, then all labels which are not `targetDigit` will
+        be transformed to False and `targetDigit` bill be transformed to True.
+        Set it to False for full MNIST task
+    target_digit : string
+        Label of the dataset, e.g. '7'.
 
     Attributes
     ----------
-    trainingSet : list
-    validationSet : list
-    testSet : list
+    training_set : list
+    validation_set : list
+    test_set : list
     """
 
     # dataPath = "data/mnist_seven.csv"
 
-    def __init__(self, dataPath, numTrain=3000, numValid=1000, numTest=1000):
+    def __init__(self, data_path,
+                 num_train=3000,
+                 num_valid=1000,
+                 num_test=1000,
+                 one_hot=True,
+                 target_digit='7'):
 
-        self.trainingSet = []
-        self.validationSet = []
-        self.testSet = []
+        self.training_set = []
+        self.validation_set = []
+        self.test_set = []
 
-        self.load(dataPath, numTrain, numValid, numTest)
+        self.load(data_path, num_train, num_valid, num_test,
+                  one_hot, target_digit)
 
-    def load(self, dataPath, numTrain, numValid, numTest):
+    def load(self, data_path, num_train, num_valid, num_test,
+             one_hot, target_digit):
         """Load the data."""
-        print("Loading data from " + dataPath + "...")
+        print("Loading data from " + data_path + "...")
 
-        data = np.genfromtxt(dataPath, delimiter=",", dtype="uint8")
+        data = np.genfromtxt(data_path, delimiter=",", dtype="uint8")
 
         # The last numTest instances ALWAYS comprise the test set.
-        train, test = data[:numTrain+numValid], data[numTrain+numValid:]
+        train, test = data[:num_train+num_valid], data[num_train+num_valid:]
         shuffle(train)
 
-        train, valid = train[:numTrain], train[numTrain:]
+        train, valid = train[:num_train], train[num_train:]
 
-        self.trainingSet = DataSet(train)
-        self.validationSet = DataSet(valid)
-        self.testSet = DataSet(test)
+        self.training_set = DataSet(train, one_hot=one_hot,
+                                    target_digit=target_digit)
+        self.validation_set = DataSet(valid, one_hot=one_hot,
+                                      target_digit=target_digit)
+        self.test_set = DataSet(test, one_hot=one_hot,
+                                target_digit=target_digit)
 
         print("Data loaded.")

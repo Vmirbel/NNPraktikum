@@ -16,24 +16,24 @@ class StupidRecognizer(Classifier):
     recognizing method later on.
 
     The method is that it will randomly decide the digit is a "7" or not
-    based on the probability 'byChance'.
+    based on the probability 'by_chance'.
     """
 
-    def __init__(self, train, valid, test, byChance=0.5):
+    def __init__(self, train, valid, test, by_chance=0.5):
 
-        self.byChance = byChance
+        self.by_chance = by_chance
 
-        self.trainingSet = train
-        self.validationSet = valid
-        self.testSet = test
+        self.training_set = train
+        self.validation_set = valid
+        self.test_set = test
 
     def train(self):
         # Do nothing
         pass
 
-    def classify(self, testInstance):
+    def classify(self, test_instance):
         # byChance is the probability of being correctly recognized
-        return random() < self.byChance
+        return random() < self.by_chance
 
     def evaluate(self):
-        return list(map(self.classify, self.testSet.input))
+        return list(map(self.classify, self.test_set.input))

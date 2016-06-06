@@ -19,22 +19,22 @@ class DataSet(object):
     input : list
     label : list
         A labels for the data given in `input`.
-    oneHot : bool
-    targetDigit : string
+    one_hot : bool
+    target_digit : string
     """
 
-    def __init__(self, data, oneHot=True, targetDigit='7'):
+    def __init__(self, data, one_hot=True, target_digit='7'):
 
         # The label of the digits is always the first fields
         self.input = 1.0 * data[:, 1:]/255
         self.label = data[:, 0]
-        self.oneHot = oneHot
-        self.targetDigit = targetDigit
+        self.one_hot = one_hot
+        self.target_digit = target_digit
 
-        # Transform all labels which is not the targetDigit to False,
-        # The label of targetDigit will be True,
-        if oneHot:
-            self.label = list(map(lambda a: 1 if str(a) == targetDigit else 0,
+        # Transform all labels which is not the target_digit to False,
+        # The label of target_digit will be True,
+        if one_hot:
+            self.label = list(map(lambda a: 1 if str(a) == target_digit else 0,
                                   self.label))
 
     def __iter__(self):
