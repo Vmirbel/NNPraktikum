@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import matplotlib.pyplot as plt
 from data.mnist_seven import MNISTSeven
-from model.stupid_recognizer import StupidRecognizer
+# from model.stupid_recognizer import StupidRecognizer
 from model.perceptron import Perceptron
-from model.logistic_regression import LogisticRegression
+# from model.logistic_regression import LogisticRegression
 from report.evaluator import Evaluator
+
 
 
 def main():
@@ -29,8 +31,12 @@ def main():
     print("=========================")
     print("Training..")
 
-    print("\nStupid Classifier has been training..")
-    myStupidClassifier.train()
+    # print("\nStupid Classifier has been training..")
+    # myStupidClassifier.train()
+    # print("Done..")
+
+    print("\nPerceptron has been training..")
+    myPerceptronClassifier.train()
     print("Done..")
 
     print("\nPerceptron has been training..")
@@ -39,7 +45,7 @@ def main():
 
 #     print("\nLogistic Regression has been training..")
 #     myLRClassifier.train()
-#     print("Done..")
+    plt.draw()
 
     # Do the recognizer
     # Explicitly specify the test set to be evaluated
