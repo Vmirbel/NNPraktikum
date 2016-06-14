@@ -3,7 +3,7 @@
 """
 Activation functions which can be used within neurons.
 """
-
+import numpy as np
 from numpy import exp
 from numpy import divide
 
@@ -52,12 +52,12 @@ class Activation:
     @staticmethod
     def softmax(outp):
         # Here you have to code the softmax function
-        pass
+        return np.exp(outp) / np.sum(np.exp(outp))
 
     @staticmethod
     def softmax_prime(outp):
         # Here you have to code the the derivative of softmax function
-        pass
+        return outp*(1-outp)
 
     @staticmethod
     def get_activation(function_name):

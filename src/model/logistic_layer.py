@@ -48,14 +48,14 @@ class LogisticLayer():
         self.n_in = n_in
         self.n_out = n_out
 
-        self.inp = np.ndarray((n_in+1, 1))
+        self.inp = np.ndarray((n_in + 1))
         self.inp[0] = 1
         self.outp = np.ndarray((n_out, 1))
         self.deltas = np.zeros((n_out, 1))
 
         # You can have better initialization here
         if weights is None:
-            self.weights = np.random.rand(n_in+1, n_out)/10
+            self.weights = np.random.rand(n_in + 1, n_out)/10
         else:
             assert(weights.shape == (n_in + 1, n_out))
             self.weights = weights
@@ -73,20 +73,20 @@ class LogisticLayer():
         Parameters
         ----------
         inp : ndarray
-            a numpy array (n_in + 1,1) containing the input of the layer
+            a numpy array (1,n_in) containing the input of the layer
 
         Change outp
         -------
         outp: ndarray
-            a numpy array (n_out,1) containing the output of the layer
+            a numpy array (1,n_out) containing the output of the layer
         """
 
-        # Here you have to implement the forward pass
-        self.inp = inp
-        outp = self._fire(inp)
-        self.outp = outp
+        self.inp = np.ndarray(inp.shape[0] + 1)
+        self.inp[0] = 1
+        self.inp[1:] = inp
+        self.outp = self._fire(inp)
 
-        return outp
+        return self.outp
 
     def computeDerivative(self, next_derivatives, next_weights):
         """
@@ -110,9 +110,9 @@ class LogisticLayer():
         # In case of the output layer, next_weights is array of 1
         # and next_derivatives - the derivative of the error will be the errors
         # Please see the call of this method in LogisticRegression.
-        self.deltas = (self.outp *
-                       (1 - self.outp) *
-                       np.dot(next_derivatives, next_weights))
+        #self.deltas = (self.outp *
+        #               (1 - self.outp) *
+        #               np.dot(next_derivatives, next_weights))
 
         # Or more general: output*(1-output) is the derivatives of sigmoid
         # (sigmoid_prime)
@@ -121,7 +121,10 @@ class LogisticLayer():
 
         # Or even more general: doesn't care which activation function is used
         # self.deltas = (self.activation_derivative(self.outp) *
-        #                np.dot(next_derivatives, next_weights))
+        #                 np.dot(next_derivatives, next_weights))
+
+        # for neuron in range(0, self.n_out):
+        #     self.deltas = self.activation_derivative(self.outp) * np.dot(next_derivatives, next_weights[neuron, :])
 
         # Or you can explicitly calculate the derivatives for two cases
         # Page 40 Back-propagation slides
@@ -131,6 +134,13 @@ class LogisticLayer():
         # else:
         #     self.deltas = self.outp * (1 - self.outp) * \
         #                   np.dot(next_derivatives, next_weights)
+        # for crossentropy function)
+        if self.is_classifier_layer:
+            self.deltas = next_derivatives - self.outp
+        else:
+            for neuron in range(0, self.n_out):
+                self.deltas = self.activation_derivative(self.outp) * np.dot(next_derivatives, next_weights[neuron, :])
+
         # Or you can have two computeDerivative methods, feel free to call
         # the other is computeOutputLayerDerivative or such.
 
@@ -138,13 +148,8 @@ class LogisticLayer():
         """
         Update the weights of the layer
         """
-
-        # Here the implementation of weight updating mechanism
-        # Page 40 Back-propagation slides
         for neuron in range(0, self.n_out):
-            self.weights[:, neuron] += (learning_rate *
-                                        self.deltas[neuron] *
-                                        self.inp)
+            self.weights[:, neuron] += learning_rate * self.deltas[neuron] * self.inp
 
     def _fire(self, inp):
-        return Activation.sigmoid(np.dot(np.array(inp), self.weights))
+        return self.activation(np.dot(self.inp, self.weights))

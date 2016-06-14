@@ -86,7 +86,7 @@ class BinaryCrossEntropyError(Error):
 
     def calculate_error(self, target, output):
         # Here you have to implement the Binary Cross Entropy
-        pass
+        return -target * np.log(output) - (1.0 - target) * np.log(1.0 - output)
 
 
 class CrossEntropyError(Error):
@@ -99,4 +99,11 @@ class CrossEntropyError(Error):
 
     def calculate_error(self, target, output):
         # Here you have to implement the Cross Entropy Error
-        pass
+        # see p.5 in Training MLPs...
+        # TODO: ...
+        #return -1/len(target)*np.sum(-target*np.log(output)-(1-target)*np.log(1-output))
+        return -1/10*np.sum(-target*np.log(output)-(1-target)*np.log(1-output))
+        # targetNum = np.argmax(target)
+        # outputNum = np.argmax(output)
+        # return -1/len(target)*np.sum(-targetNum*np.log(outputNum)-(1-targetNum)*np.log(1-outputNum))
+
