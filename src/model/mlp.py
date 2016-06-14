@@ -70,8 +70,8 @@ class MultilayerPerceptron(Classifier):
         # Here is an example of a MLP acting like the Logistic Regression
         self.layers = []
         inputs_number = self.training_set.input.shape[1]
-        self.layers.append(LogisticLayer(inputs_number, 50, None, "sigmoid", False))
-        self.layers.append(LogisticLayer(50, 10, None, output_activation, True))
+        self.layers.append(LogisticLayer(inputs_number, 50, None, "sigmoid", is_classifier_layer=False))
+        self.layers.append(LogisticLayer(50, 10, None, output_activation, is_classifier_layer=True))
 
 
 
@@ -110,16 +110,11 @@ class MultilayerPerceptron(Classifier):
         ndarray :
             a numpy array (1,nOut) containing the output of the layer
         """
-
-        # next_derivatives, next_weights = self.layers[-1].computeOutDerivative(target)
-        # for hidden_layer in reversed(self.layers[:-1]):
-        #     next_derivatives, next_weights = hidden_layer.computeDerivative(next_derivatives, next_weights)
-
         output_layer = self._get_output_layer()
         output_layer.computeDerivative(target, None)
 
-        for i in range(len(self.layers) - 2, 0, -1):
-             self.layers[i].computeDerivative(self.layers[i+1].deltas, self.layers[i+1].weights)
+        for i in reversed(range(0, len(self.layers) - 1)):
+            self.layers[i].computeDerivative(self.layers[i+1].deltas, self.layers[i+1].weights)
 
         return self.costfunction.calculate_error(target, output_layer.outp)
 
@@ -212,5 +207,3 @@ class MultilayerPerceptron(Classifier):
         self.validation_set.input = np.delete(self.validation_set.input, 0,
                                               axis=1)
         self.test_set.input = np.delete(self.test_set.input, 0, axis=1)
-
-
