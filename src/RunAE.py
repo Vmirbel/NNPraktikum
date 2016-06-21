@@ -3,10 +3,8 @@
 
 from data.mnist_seven import MNISTSeven
 
-# from model.stupid_recognizer import StupidRecognizer
-# from model.perceptron import Perceptron
-# from model.logistic_regression import LogisticRegression
-from model.mlp import MultilayerPerceptron
+from model.denoising_ae import DenoisingAutoEncoder
+from model.mlp import MultilayerPerceptron 
 
 from report.evaluator import Evaluator
 from report.performance_plot import PerformancePlot
@@ -28,53 +26,29 @@ def main():
 
     # Train the classifiers #
     print("=========================")
-    print("Training..")
+    print("Training the autoencoder..")
 
-    # Stupid Classifier
-    # myStupidClassifier = StupidRecognizer(data.training_set,
-    #                                      data.validation_set,
-    #                                      data.test_set)
+    myDAE = DenoisingAutoEncoder(data.training_set,
+                                 data.validation_set,
+                                 data.test_set,
+                                 learning_rate=0.05,
+                                 epochs=30)
 
-    # print("\nStupid Classifier has been training..")
-    # myStupidClassifier.train()
-    # print("Done..")
-    # Do the recognizer
-    # Explicitly specify the test set to be evaluated
-    # stupidPred = myStupidClassifier.evaluate()
-
-    # Perceptron
-    # myPerceptronClassifier = Perceptron(data.training_set,
-    #                                    data.validation_set,
-    #                                    data.test_set,
-    #                                    learning_rate=0.005,
-    #                                    epochs=10)
-
-    # print("\nPerceptron has been training..")
-    # myPerceptronClassifier.train()
-    # print("Done..")
-    # Do the recognizer
-    # Explicitly specify the test set to be evaluated
-    # perceptronPred = myPerceptronClassifier.evaluate()
-
-    # Logistic Regression
-    # myLRClassifier = LogisticRegression(data.training_set,
-    #                                    data.validation_set,
-    #                                    data.test_set,
-    #                                    learning_rate=0.005,
-    #                                    epochs=30)
-
-    # print("\nLogistic Regression has been training..")
-    # myLRClassifier.train()
-    # print("Done..")
-    # Do the recognizer
-    # Explicitly specify the test set to be evaluated
-    # lrPred = myLRClassifier.evaluate()
+    print("\nAutoencoder  has been training..")
+    myDAE.train()
+    print("Done..")
 
     # Multi-layer Perceptron
+    # NOTES:
+    # Now take the trained weights (layer) from the Autoencoder
+    # Feed it to be a hidden layer of the MLP, continue training (fine-tuning)
+    # And do the classification
+
+    # Correct the code here
     myMLPClassifier = MultilayerPerceptron(data.training_set,
                                            data.validation_set,
-                                           data.test_set,
-                                           learning_rate=0.05,
+                                            data.test_set,
+                                            learning_rate=0.05,
                                            epochs=30)
 
     print("\nMulti-layer Perceptron has been training..")
@@ -100,12 +74,12 @@ def main():
     # evaluator.printComparison(data.testSet, perceptronPred)
     # evaluator.printAccuracy(data.test_set, lrPred)
 
-    print("\nResult of the Multi-layer Perceptron recognizer (on test set):")
+    print("\nResult of the DAE + MLP recognizer (on test set):")
     # evaluator.printComparison(data.testSet, perceptronPred)
     evaluator.printAccuracy(data.test_set, mlpPred)
 
     # Draw
-    plot = PerformancePlot("Multi-layer Perceptron on MNIST task")
+    plot = PerformancePlot("DAE + MLP on MNIST task")
     plot.draw_performance_epoch(myMLPClassifier.performances,
                                 myMLPClassifier.epochs)
 

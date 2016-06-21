@@ -99,4 +99,13 @@ class CrossEntropyError(Error):
 
     def calculate_error(self, target, output):
         # Here you have to implement the Cross Entropy Error
-        pass
+        return -(target * np.log(output) +
+                 (1.0 - target) * np.log(1.0 - output))
+
+    @staticmethod
+    def get_error_derivative(target, output):
+        # Here you have to implement the derivative of Cross Entropy Error
+        dividant = output * (1.0 - output)
+        eps = 1e-50
+        dividant[dividant < eps] = eps
+        return np.sum(np.divide(output - target, dividant))
