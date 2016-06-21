@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from data.mnist_seven import MNISTSeven
-
+import time
 from model.stupid_recognizer import StupidRecognizer
 from model.perceptron import Perceptron
 from model.logistic_regression import LogisticRegression
@@ -76,11 +76,14 @@ def main():
                                            data.validation_set,
                                            data.test_set,
                                            learning_rate=0.005,
-                                           epochs=60)
+                                           epochs=300)
 
     print("\nLogistic Regression has been training..")
+    start = time.time()
     myMLPClassifier.train(verbose)
-    print("Done..")
+    end = time.time()
+    print("Done.. Trainingstime (seconds):")
+    print(end - start)
     # Do the recognizer
     # Explicitly specify the test set to be evaluated
     mlpPred = myMLPClassifier.evaluate()
