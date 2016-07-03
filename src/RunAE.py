@@ -9,6 +9,8 @@ from model.mlp import MultilayerPerceptron
 from report.evaluator import Evaluator
 from report.performance_plot import PerformancePlot
 
+from src.model.logistic_layer import LogisticLayer
+
 
 def main():
     # data = MNISTSeven("../data/mnist_seven.csv", 3000, 1000, 1000,
@@ -45,10 +47,18 @@ def main():
     # And do the classification
 
     # Correct the code here
+    mlpLayers = []
+
+    mlpLayers.append(LogisticLayer(data.training_set.input.shape[1], 100,
+                                   weights=myDAE._get_weights(), activation="sigmoid"))
+    # Output layer
+    mlpLayers.append(LogisticLayer(100, 10, None, activation="softmax", is_classifier_layer=True))
+
     myMLPClassifier = MultilayerPerceptron(data.training_set,
                                            data.validation_set,
-                                            data.test_set,
-                                            learning_rate=0.05,
+                                           data.test_set,
+                                           layers = mlpLayers,
+                                           learning_rate=0.05,
                                            epochs=30)
 
     print("\nMulti-layer Perceptron has been training..")
