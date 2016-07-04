@@ -205,13 +205,13 @@ class DenoisingAutoEncoder(AutoEncoder):
     def _add_noise(self, inputs):
         noise_size = inputs[0].shape[0]
         zeros_size = int(noise_size * 0.3)
-        noize = np.ones(noise_size - zeros_size)
-        noize = np.insert(noize, 0, np.zeros(zeros_size))
+        noise = np.ones(noise_size - zeros_size)
+        noise = np.insert(noise, 0, np.zeros(zeros_size))
 
         noise_inputs = []
 
         for input_curr in inputs:
-            np.random.shuffle(mask)
-            noise_inputs.append(input_curr*noize)
+            np.random.shuffle(noise)
+            noise_inputs.append(input_curr*noise)
 
         return noise_inputs
